@@ -1,4 +1,4 @@
-username    password    permissions
-testuser0   tuser0  member
-betatest    best    member
-admin   adminster   mod
+username    password    uuid  permissions
+testuser0   tuser0  u00000000   member
+betatest    best    u11111111   member
+admin   adminster   u12312312   mod
