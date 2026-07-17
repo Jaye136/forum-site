@@ -1,16 +1,26 @@
 {
-  "name": "forum-site",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "dependencies": {
-    "express": "^5.2.1"
-  }
+    "name": "forum-site",
+    "version": "1.0.0",
+    "description": "",
+    "type": "module",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "dotenv": "^17.4.2",
+        "express": "^5.2.1",
+        "mysql2": "^3.23.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Jaye136/forum-site.git"
+    },
+    "bugs": {
+        "url": "https://github.com/Jaye136/forum-site/issues"
+    },
+    "homepage": "https://github.com/Jaye136/forum-site#readme"
 }

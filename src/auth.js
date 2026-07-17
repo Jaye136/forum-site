@@ -1,14 +1,16 @@
-import { userCheck } from "./data";
+// import { userCheck } from "./data";
 
 let currUser;
 
 // check if password matches the user id, if true, allow login
 export function loginUser(id, pass) {
-    let userResult = userCheck(id);
+    // let userResult = userCheck(id); // function gone, check with sql now
     if (userResult) {
         if (userResult.password == pass) {
             currUser = userResult;
             // successful login, refresh page
+        } else {
+            // tell user the password is incorrect
         }
     } else {
         // tell user there is no user by that id
