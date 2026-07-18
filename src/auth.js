@@ -1,13 +1,15 @@
-// import { userCheck } from "./data";
+import { connectionPool } from "./database";
 
 let currUser;
 
 // check if password matches the user id, if true, allow login
-export function loginUser(id, pass) {
-    // let userResult = userCheck(id); // function gone, check with sql now
-    if (userResult) {
-        if (userResult.password == pass) {
-            currUser = userResult;
+export async function loginUser(id, pass) {
+    const match = await connectionPool.query('CALL fetchUser(?)', [id]);
+    const matchuser = match[0];
+    if (matchuser.length != 0) {
+        if (matchuser[0].password == pass) {
+            currUser = new User(matchuser[0].username, matchuser[0].password, matchuser[0].role);
+            currUser.id = matchuser[0].id;
             // successful login, refresh page
         } else {
             // tell user the password is incorrect

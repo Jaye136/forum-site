@@ -39,6 +39,14 @@ BEGIN
 	VALUES (user, pass, uuid, perms);
 END //
 
+CREATE PROCEDURE fetchUser
+(
+	IN uuid VARCHAR(12),
+)
+BEGIN
+	SELECT * FROM users WHERE id = uuid;
+END //
+
 CREATE PROCEDURE promoteUser
 (
 	IN uuid CHAR(10)
