@@ -1,6 +1,8 @@
 import { connectionPool } from "./database";
 
-let currUser;
+const initFetchAmount = 20;
+export let currUser;
+export let fetchReqAmount = initFetchAmount; // session-specific to current user
 
 // check if password matches the user id, if true, allow login
 export async function loginUser(id, pass) {
@@ -10,6 +12,7 @@ export async function loginUser(id, pass) {
         if (matchuser[0].password == pass) {
             currUser = new User(matchuser[0].username, matchuser[0].password, matchuser[0].role);
             currUser.id = matchuser[0].id;
+            fetchReqAmount = initFetchAmount;
             // successful login, refresh page
         } else {
             // tell user the password is incorrect

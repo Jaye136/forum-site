@@ -1,4 +1,7 @@
+import { fetchReqAmount } from "./auth";
 import { connectionPool } from "./database";
+
+
 
 // -------- ID generation --------
 
@@ -125,8 +128,6 @@ export async function addNewPost(contents, author) {
     // NOTE: put it in the SQL db
 }
 
-const fetchReqAmount = 20;
-
 // load posts
 // should start out 30, load 10 more posts every time user requests loading older posts
 // if posts are less than fetchReqAmount, fetchReqAmount shrinks appropriately
@@ -135,9 +136,16 @@ export async function loadPosts() {
     // fetchReqAmount if we've already loaded the entire forum into our feed)
     const totalPosts = await connectionPool.query('SELECT COUNT(*) FROM posts');
     if (totalPosts >= fetchReqAmount + 10) {
-        fetchReqAmount = fetchReqAmount + 10;
+        fetchReqAmount += 10;
     } else {
         fetchReqAmount = totalPosts;
     }
+    return connectionPool.execute('CALL fetchPosts(?)', [fetchReqAmount]);
+}
+
+// refresh posts
+// loads the same amount of posts, without adding more
+export async function refreshPosts() {
+    const totalPosts = await connectionPool.query('SELECT COUNT(*) FROM posts');
     return connectionPool.execute('CALL fetchPosts(?)', [fetchReqAmount]);
 }
