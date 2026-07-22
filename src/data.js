@@ -1,19 +1,18 @@
-import { fetchReqAmount } from "./auth";
-import { connectionPool } from "./database";
-
-
+import { fetchReqAmount, setFetchReq } from "./auth.js";
+import { connectionPool } from "./database.js";
 
 // -------- ID generation --------
 
 // check if ID is valid (does not already exist)
-const validID = function (type, id) {
-    // if (type == p) return !forumStore.has(id);
-    // if (type == u) return !userMap.has(id);
-
-    // console.log('Invalid type! Please report this error.');
-    // return true; // infinite loop probably worse...
-
-    // NOTE: change to check with mysql if the id is valid instead
+const validID = async function (type, id) {
+    if (type == c) {
+        const [match] = await connectionPool.query('SELECT * FROM comments WHERE ID = ?', [id]);
+    } else if (type == p) {
+        const [match] = await connectionPool.query('SELECT * FROM posts WHERE ID = ?', [id]);
+    } else { // if (type == u)
+        const [match] = await connectionPool.query('SELECT * FROM users WHERE ID = ?', [id]);
+    }
+    return match.length == 0;
 }
 
 // generate a unique ID for a post
@@ -24,79 +23,30 @@ const generateID = function (type) {
 }
 
 
-// -------- Classes --------
-
-class Comment {
-    constructor(contents, author, parent) {
-        this.contents = contents;
-        this.author = author;
-        this.timestamp = new Date().getTime();
-        this.status = "active";
-        this.id = generateID('c');
-        this.parent = parent; // can either be comment or post id
-    }
-
-    delete() {
-        this.status = "deleted";
-    }
-}
-
-class Post {
-    constructor(contents, author) {
-        this.contents = contents;
-        this.author = author;
-        this.timestamp = new Date().getTime();
-        this.id = generateID('p');
-        this.status = "active";
-    }
-
-    delete() {
-        this.status = "deleted";
-    }
-}
-
-class User {
-    constructor(username, password, role) {
-        this.username = username; // not unique, more of like a display name
-        this.password = password;
-        this.id = generateID('u'); // keep id secure!! like secondary password
-        this.role = role;
-    }
-
-    promote() {
-        this.role = "mod";
-    }
-
-    demote() {
-        this.role = "member";
-    }
-}
-
-
 // -------- Comment-related functions --------
 
 // add a top level comment (reply to post)
 export async function addTopComment(contents, author, post) {
-    const newcom = new Comment(contents, author, post);
-    return connectionPool.query('CALL addCommentTop(?, ?, ?, ?, ?, ?)',
-        [contents, author, newcom.timestamp, newcom.status, newcom.id, post]);
+    await connectionPool.query('CALL addCommentTop(?, ?, ?, ?, ?, ?)',
+        [contents, author, new Date().getTime(), 'active', 'p' + generateID('c'), post]);
 }
 
 // add a nested comment (reply to comment)
 export async function addNestComment(contents, author, comment) {
-    const newcom = new Comment(contents, author, comment);
-    return connectionPool.query('CALL addCommentNest(?, ?, ?, ?, ?, ?)',
-        [contents, author, newcom.timestamp, newcom.status, newcom.id, comment]);
+    await connectionPool.query('CALL addCommentNest(?, ?, ?, ?, ?, ?)',
+        [contents, author, new Date().getTime(), 'active', 'c' + generateID('c'), comment]);
 }
 
 // load top level comments on this post
 export async function loadTopComment(post) {
-    return connectionPool.query('CALL fetchTopComments(?)', [post]);
+    const [topcoms] = await connectionPool.query('CALL fetchTopComments(?)', [post]);
+    return topcoms[0];
 }
 
 // load nested comments for this comment
 export async function loadNestComment(comment) {
-    return connectionPool.query('CALL fetchNestedComments(?)', [comment]);
+    const [nestcoms] = await connectionPool.query('CALL fetchNestedComments(?)', [comment]);
+    return nestcoms[0];
 }
 
 
@@ -110,8 +60,7 @@ export async function registerUser(user, pass) {
     if (user.length > 12) throw new Error('Username invalid: exceeded 12 characters');
     if (pass.length > 12) throw new Error('Password invalid: exceeded 12 characters');
 
-    const newser = new User(user, pass, 'member');
-    return connectionPool.query('CALL registerUser(?, ?, ?, ?)', [user, pass, newser.role, newser.id]);
+    await connectionPool.query('CALL registerUser(?, ?, ?, ?)', [user, pass, generateID('u'), 'member']);
     // stops injection attacks, like someone doing "\t\tmod" as a password and becoming a mod
     // (?, ?, ?, ?) 'reads literal', aka flattens input into text & does not allow regex (?) operations
 }
@@ -124,8 +73,8 @@ export async function registerUser(user, pass) {
 // add new post
 // should be in order (load from top
 export async function addNewPost(contents, author) {
-    const newst = new Post(contents, author);
-    // NOTE: put it in the SQL db
+    await connectionPool.query('CALL addPost(?, ?, ?, ?, ?)',
+        [contents, author, new Date().getTime(), generateID('p'), 'active']);
 }
 
 // load posts
@@ -134,18 +83,20 @@ export async function addNewPost(contents, author) {
 export async function loadPosts() {
     // for checking how many posts there are in the db (no need to increment
     // fetchReqAmount if we've already loaded the entire forum into our feed)
-    const totalPosts = await connectionPool.query('SELECT COUNT(*) FROM posts');
-    if (totalPosts >= fetchReqAmount + 10) {
-        fetchReqAmount += 10;
+    const [totalPosts] = await connectionPool.query('SELECT COUNT(*) FROM posts');
+    const totalNum = totalPosts[0].total;
+    if (totalNum >= fetchReqAmount + 10) {
+        setFetchReq(fetchReqAmount + 10);
     } else {
-        fetchReqAmount = totalPosts;
+        setFetchReq(totalNum);
     }
-    return connectionPool.execute('CALL fetchPosts(?)', [fetchReqAmount]);
+    const [posts] = await connectionPool.query('CALL fetchPosts(?)', [fetchReqAmount]);
+    return posts[0];
 }
 
 // refresh posts
 // loads the same amount of posts, without adding more
 export async function refreshPosts() {
-    const totalPosts = await connectionPool.query('SELECT COUNT(*) FROM posts');
-    return connectionPool.execute('CALL fetchPosts(?)', [fetchReqAmount]);
+    const [posts] = await connectionPool.query('CALL fetchPosts(?)', [fetchReqAmount]);
+    return posts[0];
 }
