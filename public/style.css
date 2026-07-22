@@ -12,3 +12,7 @@ ul {
     list-style: none;
     padding: 0;
 }
+
+p {
+    text-indent: 40px;
+}

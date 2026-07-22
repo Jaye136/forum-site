@@ -1,14 +1,5 @@
-// import { connectStream, loadUsers } from "./data";
-
-// async function startServer() {
-//     await loadUsers();
-//     connectStream();
-// }
-
-// startServer();
-
 import express from "express";
-import { loadPost, loadPosts, refreshPosts } from "./data.js";
+import { loadAllComments, loadPost, refreshPosts } from "./data.js";
 import { loadSchema } from "./database.js";
 const app = express();
 const port = 3000; // high number = lower access
@@ -19,14 +10,21 @@ await loadSchema();
 
 app.get('/posts', async (req, res) => {
     const postList = await refreshPosts();
-    res.render("fpage.ejs", {postList}
+    res.render("fpage.ejs", { postList }
     );
 });
 
 app.get('/posts/:id', async (req, res) => {
     const id = req.params.id;
-    const post = await loadPost(id);
-    res.render("post.ejs", {post});
+    const loadResult = await loadPost(id);
+
+    if (loadResult.length == 0) {
+        return res.status(404).render("post404.ejs");
+    }
+    
+    const post = loadResult[0];
+    const commentChunks = await loadAllComments(post);
+    res.render("post.ejs", { post, commentChunks });
 });
 
 app.get("/", (req, res) => {

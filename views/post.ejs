@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css">
+    <title><%= post.title %></title>
+</head>
+
+<body>
+    <h1><%= post.title %></h1>
+    <h2><a href="/posts">&lt; Back</a></h2>
+    <p><%= post.timestamp.toLocaleString(undefined, {
+        timeStyle: 'short',
+        dateStyle: 'medium'
+    }) %></p>
+    <p><%= post.contents %></p>
+
+    <hr>
+    
+    <h2>Comments</h2>
+    <p>add some way to check if user is logged in & add comments here</p>
+    <% if (commentChunks.length == 0) { %>
+        <p>No comments so far</p>
+    <% } else { %>
+        <ul>
+            <% commentChunks.forEach(commentBit => {
+                const topComment = commentBit[0][0];
+                const topAuthor = commentBit[0][1];
+                const nestComments = commentBit[1];
+            %>
+                <li>
+
+                <h3><%= topAuthor %></h3>
+                <p><%= topComment.timestamp.toLocaleString(undefined, { timeStyle: 'short' , dateStyle: 'medium' }) %></p>
+                <p><%= topComment.contents %></p>
+
+                <% if (nestComments.length > 0) { %>
+                    <ul>
+                        <% nestComments.forEach(nestbit => {
+                            const nestComments = nestbit[0];
+                            const nestAuthor = nestbit[1];
+                        %>
+                            <li>
+                                <h3 style="text-indent:40px"><%= nestAuthor %></h3>
+                                <p style="text-indent:40px"><%= nestComments.timestamp.toLocaleString(undefined, { timeStyle: 'short' , dateStyle: 'medium' }) %></p>
+                                <p style="text-indent:40px"><%= nestComments.contents %></p>
+                            </li>
+                        <% })%>
+                    </ul>
+                <% } %>
+                </li>
+            <% }) %>
+        </ul>
+    <% } %>
+</body>
+
+</html>
