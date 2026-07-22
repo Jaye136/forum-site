@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css">
+    <title>Forum Homepage</title>
+</head>
+
+<body>
+    <h1>Forum Homepage</h1>
+    <ul>
+    <% postList.forEach(post => { %>
+        <li>
+            <h2><a href="/posts/<%= post.id %>"><%= post.title %></a></h2>
+            <p><%= post.timestamp.toLocaleString(undefined, {
+                timeStyle: 'short',
+                dateStyle: 'medium'
+            }) %></p>
+            <p><%= post.contents.substring(0, 200) %>...</p>
+        </li>
+    <% }) %>
+    </ul>
+    <p>My first paragraph.</p>
+</body>
+
+</html>

@@ -28,24 +28,24 @@ const generateID = function (type) {
 // add a top level comment (reply to post)
 export async function addTopComment(contents, author, post) {
     await connectionPool.query('CALL addCommentTop(?, ?, ?, ?, ?, ?)',
-        [contents, author, new Date().getTime(), 'active', 'p' + generateID('c'), post]);
+        [contents, author, NOW(), 'active', 'p' + generateID('c'), post]);
 }
 
 // add a nested comment (reply to comment)
 export async function addNestComment(contents, author, comment) {
     await connectionPool.query('CALL addCommentNest(?, ?, ?, ?, ?, ?)',
-        [contents, author, new Date().getTime(), 'active', 'c' + generateID('c'), comment]);
+        [contents, author, NOW(), 'active', 'c' + generateID('c'), comment]);
 }
 
 // load top level comments on this post
 export async function loadTopComment(post) {
-    const [topcoms] = await connectionPool.query('CALL fetchTopComments(?)', [post]);
+    const [topcoms] = await connectionPool.query('CALL fetchTopComments(?)', ['p' + post]);
     return topcoms[0];
 }
 
 // load nested comments for this comment
 export async function loadNestComment(comment) {
-    const [nestcoms] = await connectionPool.query('CALL fetchNestedComments(?)', [comment]);
+    const [nestcoms] = await connectionPool.query('CALL fetchNestedComments(?)', ['c' + comment]);
     return nestcoms[0];
 }
 
@@ -65,16 +65,19 @@ export async function registerUser(user, pass) {
     // (?, ?, ?, ?) 'reads literal', aka flattens input into text & does not allow regex (?) operations
 }
 
-// dont need loadUsers because I'm not currently planning any functions that would allow people to view a list of users
-
 
 // -------- Post-related functions --------
 
 // add new post
 // should be in order (load from top
-export async function addNewPost(contents, author) {
-    await connectionPool.query('CALL addPost(?, ?, ?, ?, ?)',
-        [contents, author, new Date().getTime(), generateID('p'), 'active']);
+export async function addNewPost(title, contents, author) {
+    await connectionPool.query('CALL addPost(?, ?, ?, ?, ?, ?)',
+        [title, contents, author, NOW(), generateID('p'), 'active']);
+}
+
+export async function loadPost(id) {
+    const [match] = await connectionPool.query('CALL fetchPost(?)', [id]);
+    return match[0][0];
 }
 
 // load posts
@@ -83,7 +86,7 @@ export async function addNewPost(contents, author) {
 export async function loadPosts() {
     // for checking how many posts there are in the db (no need to increment
     // fetchReqAmount if we've already loaded the entire forum into our feed)
-    const [totalPosts] = await connectionPool.query('SELECT COUNT(*) FROM posts');
+    const [totalPosts] = await connectionPool.query('SELECT COUNT(*) AS total FROM posts');
     const totalNum = totalPosts[0].total;
     if (totalNum >= fetchReqAmount + 10) {
         setFetchReq(fetchReqAmount + 10);

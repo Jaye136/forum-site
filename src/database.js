@@ -1,5 +1,7 @@
 import mysql from 'mysql2/promise';
+import fs from 'fs/promises';
 import dotenv from 'dotenv';
+import path from 'path';
 
 dotenv.config();
 
@@ -11,5 +13,13 @@ export const connectionPool = mysql.createPool({
     user: process.env.MYSQL_USER,
     password: process.env.MYSQL_PASSWORD,
     database: process.env.MYSQL_DATABASE,
-    timezone: '+00:00' // always force use UTC on default just in case
+    timezone: '+00:00', // always force use UTC on default just in case
+    multipleStatements: true
 });
+
+export async function loadSchema() {
+    const sqlPath = path.join(process.cwd(), 'schema.sql');
+    const schema = await fs.readFile(sqlPath, 'utf8');
+    await connectionPool.query(schema);
+    // await connectionPool.query("CALL addPost('AAAAAAAAAAAAA', 'BBBBBBBBBBBBBBBBBBB', '00000000', NOW(), '00000002', 'active')");
+}
