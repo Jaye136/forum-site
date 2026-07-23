@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,63 +8,90 @@
 </head>
 
 <body>
-    <h1 style="margin-bottom:0px"><%= post.title %></h1>
-    <h3 style="margin-top:0px; text-align:right"><%= poster %></h3>
-    <div class="compost-sidetoside">
-    <p style="margin-top:0px;"><a href="/posts">&lt; Back</a></p>
-    <p style="margin-top:0px;"><%= post.timestamp.toLocaleString(undefined, {
-        timeStyle: 'short',
-        dateStyle: 'medium'
-    }) %></p>
-    </div>
-    <p style="padding-left:40px; margin-top:25px; margin-bottom:35px"><%= post.contents %></p>
-
-    <hr>
-    
-    <h2>Comments</h2>
-    <p>add some way to check if user is logged in & add comments here</p>
-    <% if (commentChunks.length == 0) { %>
-        <p>No comments so far</p>
-    <% } else { %>
-        <ul class="compost-list">
-            <% commentChunks.forEach(commentBit => {
-                const topComment = commentBit[0][0];
-                const topAuthor = commentBit[0][1];
-                const nestComments = commentBit[1];
-            %>
-                <li style="margin-bottom:20px">
-                <div class="compost-sidetoside">
-                <h3><%= topAuthor %></h3>
-                <p><%= topComment.timestamp.toLocaleString(undefined, {
-                    timeStyle: 'short',
-                    dateStyle: 'medium'
-                }) %></p>
-                </div>
-                <p style="margin-top:10px; margin-bottom:10px"><%= topComment.contents %></p>
-
-                <% if (nestComments.length > 0) { %>
-                    <ul class="reply-reply-list">
-                        <% nestComments.forEach(nestbit => {
-                            const nestComments = nestbit[0];
-                            const nestAuthor = nestbit[1];
-                        %>
-                            <li class="reply-reply-item">
-                                <div class="compost-sidetoside">
-                                <h3><%= nestAuthor %></h3>
-                                <p><%= nestComments.timestamp.toLocaleString(undefined, {
-                                    timeStyle: 'short',
-                                    dateStyle: 'medium'
-                                }) %></p>
-                                </div>
-                                <p style="margin-top:10px; margin-bottom:-15px"><%= nestComments.contents %></p>
-                            </li>
-                        <% })%>
+    <div class="menu_bar">
+        <h1 style="color:white; padding-bottom:5px">ForumPage</h1>
+        <ul style="list-style: none; display: flex;">
+            <li><a href="/posts"> Posts</a></li>
+            <li><a href="/newpost"> New Post</a></li>
+            <li><a href="https://github.com/Jaye136/forum-site"> GitHub</a></li>
+            <% if (currUser == 'undefined') { %>
+                <li><a href="#">Anonymous ▼ %></a>
+                <div class="dropdown">
+                    <ul>
+                        <li><a href="#">Sign up</a></li>
+                        <li><a href="#">Log in</a></li>
                     </ul>
-                <% } %>
+                </div>
+            <% } else { %>
+                <li><a href="#"><%currUser.username %> ▼</a>
+                <div class="dropdown">
+                    <ul>
+                        <li><a href="#">Log off</a></li>
+                    </ul>
+                </div>
                 </li>
-            <% }) %>
+            <% } %>
         </ul>
-    <% } %>
+    </div>
+
+    <div class="contents">
+        <h1 style="margin-bottom:0px"><%= post.title %></h1>
+        <div class="compost-sidetoside">
+        <p style="margin-top:15px;"><%= post.timestamp.toLocaleString(undefined, {
+            timeStyle: 'short',
+            dateStyle: 'medium'
+        }) %></p>
+        <h3 style="margin-top:15px;"><%= poster %></h3>
+        </div>
+        <p style="padding-left:40px; margin-top:25px; margin-bottom:35px"><%= post.contents %></p>
+
+        <hr>
+        
+        <h2>Comments</h2>
+        <p>add some way to check if user is logged in & add comments here</p>
+        <% if (commentChunks.length == 0) { %>
+            <p>No comments so far</p>
+        <% } else { %>
+            <ul class="compost-list">
+                <% commentChunks.forEach(commentBit => {
+                    const topComment = commentBit[0][0];
+                    const topAuthor = commentBit[0][1];
+                    const nestComments = commentBit[1];
+                %>
+                    <li style="margin-bottom:20px">
+                    <div class="compost-sidetoside">
+                    <h3><%= topAuthor %></h3>
+                    <p><%= topComment.timestamp.toLocaleString(undefined, {
+                        timeStyle: 'short',
+                        dateStyle: 'medium'
+                    }) %></p>
+                    </div>
+                    <p style="margin-top:10px; margin-bottom:10px"><%= topComment.contents %></p>
+
+                    <% if (nestComments.length > 0) { %>
+                        <ul class="reply-reply-list">
+                            <% nestComments.forEach(nestbit => {
+                                const nestComments = nestbit[0];
+                                const nestAuthor = nestbit[1];
+                            %>
+                                <li class="reply-reply-item">
+                                    <div class="compost-sidetoside">
+                                    <h3><%= nestAuthor %></h3>
+                                    <p><%= nestComments.timestamp.toLocaleString(undefined, {
+                                        timeStyle: 'short',
+                                        dateStyle: 'medium'
+                                    }) %></p>
+                                    </div>
+                                    <p style="margin-top:10px; margin-bottom:-15px"><%= nestComments.contents %></p>
+                                </li>
+                            <% })%>
+                        </ul>
+                    <% } %>
+                    </li>
+                <% }) %>
+            </ul>
+        <% } %>
+    </div>
 </body>
 
 </html>

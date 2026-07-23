@@ -1,7 +1,7 @@
 import { connectionPool } from "./database.js";
 
 const initFetchAmount = 20;
-export let currUser;
+export let currUser = 'undefined';
 export let fetchReqAmount = initFetchAmount; // session-specific to current user
 
 export function setFetchReq(newnum) {
