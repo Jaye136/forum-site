@@ -13,7 +13,7 @@
     <ul class="compost-list">
     <% postList.forEach(post => { %>
         <li>
-            <div class="compost-datetime">
+            <div class="compost-sidetoside">
             <h2><a href="/posts/<%= post.id %>"><%= post.title %></a></h2>
             <p><%= post.timestamp.toLocaleString(undefined, {
                 timeStyle: 'short',

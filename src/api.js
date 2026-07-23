@@ -24,8 +24,9 @@ app.get('/posts/:id', async (req, res) => {
     }
     
     const post = loadResult[0];
+    const poster = loadResult[1];
     const commentChunks = await loadAllComments(post);
-    res.render("post.ejs", { post, commentChunks });
+    res.render("post.ejs", { post, poster, commentChunks });
 });
 
 app.get("/", (req, res) => {

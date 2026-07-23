@@ -8,7 +8,7 @@ img {
     width: 100%;
 }
 
-.compost-datetime {
+.compost-sidetoside {
     display: flex;
     justify-content: space-between;
     align-items: baseline;

@@ -100,7 +100,8 @@ export async function addNewPost(title, contents, author) {
 
 export async function loadPost(id) {
     const [match] = await connectionPool.query('CALL fetchPost(?)', [id]);
-    return match[0];
+    const [poster] = await connectionPool.query('CALL fetchUser(?)', [match[0][0].author]);
+    return [match[0][0], poster[0][0].username];
 }
 
 // load posts

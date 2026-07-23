@@ -9,13 +9,16 @@
 </head>
 
 <body>
-    <h1><%= post.title %></h1>
-    <h2><a href="/posts">&lt; Back</a></h2>
+    <h1 style="margin-bottom:0px"><%= post.title %></h1>
+    <div class="compost-sidetoside">
+    <h3><%= poster %></h3>
     <p><%= post.timestamp.toLocaleString(undefined, {
         timeStyle: 'short',
         dateStyle: 'medium'
     }) %></p>
-    <p style="padding-left:40px;"><%= post.contents %></p>
+    </div>
+    <p style="margin-top:7px;"><a href="/posts">&lt; Back</a></p>
+    <p style="padding-left:40px; margin-top:25px; margin-bottom:35px"><%= post.contents %></p>
 
     <hr>
     
@@ -30,8 +33,8 @@
                 const topAuthor = commentBit[0][1];
                 const nestComments = commentBit[1];
             %>
-                <li style="margin-bottom: 20px">
-                <div class="compost-datetime">
+                <li style="margin-bottom:20px">
+                <div class="compost-sidetoside">
                 <h3><%= topAuthor %></h3>
                 <p><%= topComment.timestamp.toLocaleString(undefined, {
                     timeStyle: 'short',
@@ -47,7 +50,7 @@
                             const nestAuthor = nestbit[1];
                         %>
                             <li class="reply-reply-item">
-                                <div class="compost-datetime">
+                                <div class="compost-sidetoside">
                                 <h3><%= nestAuthor %></h3>
                                 <p><%= nestComments.timestamp.toLocaleString(undefined, {
                                     timeStyle: 'short',
