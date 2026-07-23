@@ -8,11 +8,53 @@ img {
     width: 100%;
 }
 
-ul {
-    list-style: none;
-    padding: 0;
+.compost-datetime {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    position: relative;
+    margin-top: -10px;
+    margin-bottom: -22px;
 }
 
-p {
-    text-indent: 40px;
+.compost-list {
+    list-style: none;
+    padding: 0px;
+    position: relative;
+}
+
+.reply-reply-list {
+    list-style: none;
+    padding-left: 35px;
+    position: relative;
+}
+
+.reply-reply-list::before {
+    content: "";
+    position: absolute;
+    top: 7px;
+    left: 8px;
+    bottom: 50px;
+    border-left: 2px solid #929292;
+}
+
+.reply-reply-item {
+    list-style: none;
+    margin-top: 15px;
+    margin-left: 0px;
+    position: relative;
+}
+
+.reply-reply-item::before {
+    content: "";
+    position: absolute;
+
+    left: -27px;
+    top: 10px;
+    width: 15px;
+    height: 20px;
+
+    border-left: 2px solid #929292;
+    border-bottom: 2px solid #929292;
+    border-bottom-left-radius: 8px;
 }

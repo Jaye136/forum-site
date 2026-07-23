@@ -10,14 +10,16 @@
 
 <body>
     <h1>Forum Homepage</h1>
-    <ul>
+    <ul class="compost-list">
     <% postList.forEach(post => { %>
         <li>
+            <div class="compost-datetime">
             <h2><a href="/posts/<%= post.id %>"><%= post.title %></a></h2>
             <p><%= post.timestamp.toLocaleString(undefined, {
                 timeStyle: 'short',
                 dateStyle: 'medium'
             }) %></p>
+            </div>
             <p><%= post.contents.substring(0, 200) %>...</p>
         </li>
     <% }) %>

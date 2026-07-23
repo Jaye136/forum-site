@@ -39,13 +39,13 @@ export async function addNestComment(contents, author, comment) {
 
 // load top level comments on this post
 async function loadTopComments(post) {
-    const [topcoms] = await connectionPool.query('CALL fetchTopComments(?)', ['p' + post]);
+    const [topcoms] = await connectionPool.query('CALL fetchTopComment(?)', ['p' + post]);
     return topcoms[0];
 }
 
 // load nested comments for this comment
 async function loadNestComments(comment) {
-    const [nestcoms] = await connectionPool.query('CALL fetchNestedComments(?)', ['c' + comment]);
+    const [nestcoms] = await connectionPool.query('CALL fetchNestedComment(?)', ['c' + comment]);
     return nestcoms[0];
 }
 
@@ -55,13 +55,15 @@ export async function loadAllComments(post) {
     const topComments = await loadTopComments(post.id);
     const commentChunks = [];
     for (const comment of topComments) {
-        const [[topPoster]] = await connectionPool.query('CALL fetchUser(?)', [comment.author]);
+        const [topPosterRow] = await connectionPool.query('CALL fetchUser(?)', [comment.author]);
+        const topPoster = topPosterRow[0][0];
         const topChunk = [comment, topPoster.username];
 
         const nestComments = await loadNestComments(comment.id);
         const nestChunks = [];
         for (const nestComment of nestComments) {
-            const [[nestPoster]] = await connectionPool.query('CALL fetchUser(?)', [nestComment.author]);
+            const [nestPosterRow] = await connectionPool.query('CALL fetchUser(?)', [nestComment.author]);
+            const nestPoster = nestPosterRow[0][0];
             nestChunks.push([nestComment, nestPoster.username]);
         }
         commentChunks.push([topChunk, nestChunks]);

@@ -15,7 +15,7 @@
         timeStyle: 'short',
         dateStyle: 'medium'
     }) %></p>
-    <p><%= post.contents %></p>
+    <p style="padding-left:40px;"><%= post.contents %></p>
 
     <hr>
     
@@ -24,28 +24,37 @@
     <% if (commentChunks.length == 0) { %>
         <p>No comments so far</p>
     <% } else { %>
-        <ul>
+        <ul class="compost-list">
             <% commentChunks.forEach(commentBit => {
                 const topComment = commentBit[0][0];
                 const topAuthor = commentBit[0][1];
                 const nestComments = commentBit[1];
             %>
-                <li>
-
+                <li style="margin-bottom: 20px">
+                <div class="compost-datetime">
                 <h3><%= topAuthor %></h3>
-                <p><%= topComment.timestamp.toLocaleString(undefined, { timeStyle: 'short' , dateStyle: 'medium' }) %></p>
-                <p><%= topComment.contents %></p>
+                <p><%= topComment.timestamp.toLocaleString(undefined, {
+                    timeStyle: 'short',
+                    dateStyle: 'medium'
+                }) %></p>
+                </div>
+                <p style="margin-top:10px; margin-bottom:10px"><%= topComment.contents %></p>
 
                 <% if (nestComments.length > 0) { %>
-                    <ul>
+                    <ul class="reply-reply-list">
                         <% nestComments.forEach(nestbit => {
                             const nestComments = nestbit[0];
                             const nestAuthor = nestbit[1];
                         %>
-                            <li>
-                                <h3 style="text-indent:40px"><%= nestAuthor %></h3>
-                                <p style="text-indent:40px"><%= nestComments.timestamp.toLocaleString(undefined, { timeStyle: 'short' , dateStyle: 'medium' }) %></p>
-                                <p style="text-indent:40px"><%= nestComments.contents %></p>
+                            <li class="reply-reply-item">
+                                <div class="compost-datetime">
+                                <h3><%= nestAuthor %></h3>
+                                <p><%= nestComments.timestamp.toLocaleString(undefined, {
+                                    timeStyle: 'short',
+                                    dateStyle: 'medium'
+                                }) %></p>
+                                </div>
+                                <p style="margin-top:10px; margin-bottom:-15px"><%= nestComments.contents %></p>
                             </li>
                         <% })%>
                     </ul>

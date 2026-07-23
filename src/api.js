@@ -1,12 +1,13 @@
 import express from "express";
 import { loadAllComments, loadPost, refreshPosts } from "./data.js";
-import { loadSchema } from "./database.js";
+import { loadSchema, testStuff } from "./database.js";
 const app = express();
 const port = 3000; // high number = lower access
 
 app.set("view engine", "ejs");
 
 await loadSchema();
+await testStuff();
 
 app.get('/posts', async (req, res) => {
     const postList = await refreshPosts();

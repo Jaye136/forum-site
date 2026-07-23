@@ -7,11 +7,11 @@ CREATE TABLE if NOT EXISTS users (
 
 CREATE TABLE if NOT EXISTS comments (
 	contents VARCHAR(500) NOT NULL,
-    author CHAR(10) NOT NULL,
+    author CHAR(8) NOT NULL,
     timestamp DATETIME NOT NULL,
     status VARCHAR(7) NOT NULL,
-    id CHAR(9) PRIMARY KEY,
-    parent CHAR(10) NOT NULL
+    id CHAR(8) PRIMARY KEY,
+    parent CHAR(9) NOT NULL
 );
 
 CREATE TABLE if NOT EXISTS posts (
@@ -44,7 +44,7 @@ END;
 
 CREATE PROCEDURE fetchUser
 (
-	IN uuid VARCHAR(12)
+	IN uuid CHAR(8)
 )
 BEGIN
 	SELECT * FROM users WHERE id = uuid;
@@ -52,7 +52,7 @@ END;
 
 CREATE PROCEDURE promoteUser
 (
-	IN uuid CHAR(10)
+	IN uuid CHAR(8)
 )
 BEGIN
 	UPDATE users SET role = 'mod' WHERE id = uuid;
@@ -60,7 +60,7 @@ END;
 
 CREATE PROCEDURE demoteUser
 (
-	IN uuid CHAR(10)
+	IN uuid CHAR(8)
 )
 BEGIN
 	UPDATE users SET role = 'member' WHERE id = uuid;
@@ -69,34 +69,34 @@ END;
 
 
 DROP PROCEDURE IF EXISTS addComment;
-DROP PROCEDURE IF EXISTS fetchTopComments;
-DROP PROCEDURE IF EXISTS fetchNestedComments;
+DROP PROCEDURE IF EXISTS fetchTopComment;
+DROP PROCEDURE IF EXISTS fetchNestedComment;
 
 CREATE PROCEDURE addComment
 (
 	IN cont VARCHAR(500),
-    IN poster CHAR(10),
+    IN poster CHAR(8),
     IN time DATETIME,
     IN delstat VARCHAR(7),
-    IN uuid CHAR(9),
-    IN rep2what CHAR(11)
+    IN uuid CHAR(8),
+    IN rep2what CHAR(9)
 )
 BEGIN
-	INSERT INTO posts (contents, author, timestamp, id, status)
+	INSERT INTO comments (contents, author, timestamp, status, id, parent)
 	VALUES (cont, poster, time, delstat, uuid, rep2what);
 END;
 
-CREATE PROCEDURE fetchTopComments
+CREATE PROCEDURE fetchTopComment
 (
-	IN postid CHAR(10)
+	IN postid CHAR(9)
 )
 BEGIN
 	SELECT * FROM comments WHERE parent = postid ORDER BY timestamp DESC LIMIT 25;
 END;
 
-CREATE PROCEDURE fetchNestedComments
+CREATE PROCEDURE fetchNestedComment
 (
-	IN commentid CHAR(10)
+	IN commentid CHAR(9)
 )
 BEGIN
 	SELECT * FROM comments WHERE parent = commentid ORDER BY timestamp DESC LIMIT 25;
@@ -112,7 +112,7 @@ CREATE PROCEDURE addPost
 (
     IN head VARCHAR(200),
 	IN cont VARCHAR(1000),
-    IN poster CHAR(10),
+    IN poster CHAR(8),
     IN time DATETIME,
     IN uuid CHAR(8),
     IN delstat VARCHAR(7)
@@ -124,7 +124,7 @@ END;
 
 CREATE PROCEDURE fetchPost
 (
-	IN uuid VARCHAR(12)
+	IN uuid CHAR(8)
 )
 BEGIN
 	SELECT * FROM posts WHERE id = uuid;
