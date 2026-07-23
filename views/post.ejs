@@ -10,14 +10,14 @@
 
 <body>
     <h1 style="margin-bottom:0px"><%= post.title %></h1>
+    <h3 style="margin-top:0px; text-align:right"><%= poster %></h3>
     <div class="compost-sidetoside">
-    <h3><%= poster %></h3>
-    <p><%= post.timestamp.toLocaleString(undefined, {
+    <p style="margin-top:0px;"><a href="/posts">&lt; Back</a></p>
+    <p style="margin-top:0px;"><%= post.timestamp.toLocaleString(undefined, {
         timeStyle: 'short',
         dateStyle: 'medium'
     }) %></p>
     </div>
-    <p style="margin-top:7px;"><a href="/posts">&lt; Back</a></p>
     <p style="padding-left:40px; margin-top:25px; margin-bottom:35px"><%= post.contents %></p>
 
     <hr>

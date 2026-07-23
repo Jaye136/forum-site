@@ -14,13 +14,14 @@
     <% postList.forEach(post => { %>
         <li>
             <div class="compost-sidetoside">
-            <h2><a href="/posts/<%= post.id %>"><%= post.title %></a></h2>
+            <h2><a href="/posts/<%= post.id %>">
+                <%= (post.title.length > 30)? post.title.substring(0, 30) + '...' : post.title %></a></h2>
             <p><%= post.timestamp.toLocaleString(undefined, {
                 timeStyle: 'short',
                 dateStyle: 'medium'
             }) %></p>
             </div>
-            <p><%= post.contents.substring(0, 200) %>...</p>
+            <p><%= (post.contents.length > 200)? post.contents.substring(0, 200) + '...' : post.contents %></p>
         </li>
     <% }) %>
     </ul>

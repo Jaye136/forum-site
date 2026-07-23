@@ -31,6 +31,7 @@ export async function testStuff() {
     // await connectionPool.query("CALL addPost('lorsum', 'lorem ipsum', '00000000', NOW(), '00000000', 'active')");
     // await connectionPool.query("CALL addPost('ipum', 'lorem ipsum', '00000000', NOW(), '00000001', 'active')");
     // await connectionPool.query("CALL addPost('AAAAAAAAAAAAA', 'BBBBBBBBBBBBBBBBBBB', '00000000', NOW(), '00000002', 'active')");
+    // await connectionPool.query("CALL addPost('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB BBBB BBBBBBBBBBBBB BBBBBBBBBBBBBBBBBBBBBBB', '00000000', NOW(), '00000003', 'active')");
     // await connectionPool.query("CALL addComment('EEEEEEEEEEEE', '00000000', NOW(), 'active', '00000000', 'p00000002')");
     // await connectionPool.query("CALL addComment('AAA', '00000000', NOW(), 'active', '00000001', 'p00000002')");
     // await connectionPool.query("CALL addComment('sSDDSD', '00000000', NOW(), 'active', '00000002', 'c00000000')");
