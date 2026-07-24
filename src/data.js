@@ -5,14 +5,16 @@ import { connectionPool } from "./database.js";
 
 // check if ID is valid (does not already exist)
 const validID = async function (type, id) {
-    if (type == c) {
+    if (type == 'c') {
         const [match] = await connectionPool.query('SELECT * FROM comments WHERE ID = ?', [id]);
-    } else if (type == p) {
+        return match.length == 0;
+    } else if (type == 'p') {
         const [match] = await connectionPool.query('SELECT * FROM posts WHERE ID = ?', [id]);
+        return match.length == 0;
     } else { // if (type == u)
         const [match] = await connectionPool.query('SELECT * FROM users WHERE ID = ?', [id]);
+        return match.length == 0;
     }
-    return match.length == 0;
 }
 
 // generate a unique ID for a post
@@ -27,14 +29,16 @@ const generateID = function (type) {
 
 // add a top level comment (reply to post)
 export async function addTopComment(contents, author, post) {
-    await connectionPool.query('CALL addCommentTop(?, ?, ?, ?, ?, ?)',
-        [contents, author, NOW(), 'active', 'p' + generateID('c'), post]);
+    const [topment] = await connectionPool.query('CALL addCommentTop(?, ?, NOW(), ?, ?, ?)',
+        [contents, author, 'active', 'p' + generateID('c'), post]);
+    return topment[0][0];
 }
 
 // add a nested comment (reply to comment)
 export async function addNestComment(contents, author, comment) {
-    await connectionPool.query('CALL addCommentNest(?, ?, ?, ?, ?, ?)',
-        [contents, author, NOW(), 'active', 'c' + generateID('c'), comment]);
+    const [nestment] = await connectionPool.query('CALL addCommentNest(?, ?, NOW(), ?, ?, ?)',
+        [contents, author, 'active', 'c' + generateID('c'), comment]);
+    return nestment[0][0];
 }
 
 // load top level comments on this post
@@ -76,16 +80,10 @@ export async function loadAllComments(post) {
 // -------- User-related functions --------
 
 // register new user
-// NOTE: make reject if user & pass are longer than 12 characters, also reject if length = 0
 export async function registerUser(user, pass) {
-    if (user.length < 1) throw new Error('Username invalid: must at least be one character');
-    if (pass.length < 1) throw new Error('Password invalid: must at least be one character');
-    if (user.length > 12) throw new Error('Username invalid: exceeded 12 characters');
-    if (pass.length > 12) throw new Error('Password invalid: exceeded 12 characters');
-
-    await connectionPool.query('CALL registerUser(?, ?, ?, ?)', [user, pass, generateID('u'), 'member']);
-    // stops injection attacks, like someone doing "\t\tmod" as a password and becoming a mod
-    // (?, ?, ?, ?) 'reads literal', aka flattens input into text & does not allow regex (?) operations
+    const [newser] = await connectionPool.query('CALL registerUser(?, ?, ?, ?)',
+        [user, pass, generateID('u'), 'member']);
+    return newser[0][0];
 }
 
 
@@ -94,8 +92,9 @@ export async function registerUser(user, pass) {
 // add new post
 // should be in order (load from top
 export async function addNewPost(title, contents, author) {
-    await connectionPool.query('CALL addPost(?, ?, ?, ?, ?, ?)',
-        [title, contents, author, NOW(), generateID('p'), 'active']);
+    const [post] = await connectionPool.query('CALL addPost(?, ?, ?, NOW(), ?, ?)',
+        [title, contents, author, generateID('p'), 'active']);
+    return post[0][0];
 }
 
 export async function loadPost(id) {

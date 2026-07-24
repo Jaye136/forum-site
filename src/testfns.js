@@ -1,10 +1,11 @@
 import { connectionPool } from "./database.js";
 import { loginUser, logoffUser, currUser } from "./auth.js";
+import { addNewPost } from "./data.js"
 
 export async function testStuff() {
     // await restartTables();
     // await testEnvSetUp();
-    // await getLoggedIn('member');
+    await getLoggedIn('member');
     // await getLoggedIn('mod');
     // await failLogIn('password'); // expect undefined
     // await failLogIn('account'); // expect undefined

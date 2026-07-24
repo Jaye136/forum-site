@@ -1,5 +1,5 @@
 import express from "express";
-import { loadAllComments, loadPost, refreshPosts } from "./data.js";
+import { addNewPost, loadAllComments, loadPost, refreshPosts } from "./data.js";
 import { loadSchema } from "./database.js";
 import { currUser } from "./auth.js";
 import { testStuff } from "./testfns.js";
@@ -7,6 +7,9 @@ const app = express();
 const port = 3000; // high number = lower access
 
 app.set("view engine", "ejs");
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static("public"));
 
 await loadSchema();
 await testStuff();
@@ -39,6 +42,12 @@ app.get("/newpost", (req, res) => {
     }
 });
 
+app.post("/posts", async (req, res) => {
+    const postData = req.body;
+    const newPost = await addNewPost(postData.title, postData.contents, currUser.id);
+    res.redirect(`posts/${newPost.id}`);
+});
+
 app.get("/login", (req, res) => {
     res.render("login.ejs", { currUser });
 });
@@ -54,8 +63,6 @@ app.get("/logoff", (req, res) => {
 app.get("/", (req, res) => {
     res.send("<h1>Hello World!</h1>");
 });
-
-app.use(express.static("public"));
 
 // start listening for http requests
 app.listen(port, () => {

@@ -40,6 +40,7 @@ CREATE PROCEDURE registerUser
 BEGIN
 	INSERT INTO users (username, password, id, role)
 	VALUES (user, pass, uuid, perms);
+    SELECT * FROM users WHERE id = uuid;
 END;
 
 CREATE PROCEDURE fetchUser
@@ -84,6 +85,7 @@ CREATE PROCEDURE addComment
 BEGIN
 	INSERT INTO comments (contents, author, timestamp, status, id, parent)
 	VALUES (cont, poster, time, delstat, uuid, rep2what);
+    SELECT * FROM comments WHERE id = uuid;
 END;
 
 CREATE PROCEDURE fetchTopComment
@@ -120,6 +122,7 @@ CREATE PROCEDURE addPost
 BEGIN
 	INSERT INTO posts (title, contents, author, timestamp, id, status)
 	VALUES (head, cont, poster, time, uuid, delstat);
+    SELECT * FROM posts WHERE id = uuid;
 END;
 
 CREATE PROCEDURE fetchPost
