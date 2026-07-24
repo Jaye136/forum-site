@@ -1,0 +1,25 @@
+<div class="menu_bar">
+    <h1 style="color:white; padding-bottom:5px">ForumPage</h1>
+    <ul style="list-style: none; display: flex;">
+        <li><a href="/posts"> Posts</a></li>
+        <li><a href="/newpost"> New Post</a></li>
+        <li><a href="https://github.com/Jaye136/forum-site"> GitHub</a></li>
+        <% if (!currUser) { %>
+            <li><a href="#">Anonymous ▼ %></a>
+                <div class="dropdown">
+                    <ul>
+                        <li><a href="/signup">Sign up</a></li>
+                        <li><a href="/login">Log in</a></li>
+                    </ul>
+                </div>
+                <% } else { %>
+            <li><a href="#"><%= currUser.username %> ▼</a>
+                <div class="dropdown">
+                    <ul>
+                        <li><a href="/logoff">Log off</a></li>
+                    </ul>
+                </div>
+            </li>
+            <% } %>
+    </ul>
+</div>
